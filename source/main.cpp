@@ -28,7 +28,6 @@ u8 greenTile[64] =
 	2,2,2,2,2,2,2,2
 };
 
-
 //---------------------------------------------------------------------------------
 int main(void) {
 	//---------------------------------------------------------------------------------
@@ -36,7 +35,12 @@ int main(void) {
 
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
-	vramSetBankA(VRAM_A_MAIN_BG_0x06000000);
+	vramSetBankA(VRAM_A_MAIN_BG);
+
+	int bg = bgInit(0, BgType_Text8bpp, BgSize_T_256x256, 0,1);
+
+	dmaCopy(backgroundTiles, bgGetGfxPtr(bg), sizeof(backgroundTiles));
+	dmaCopy(backgroundPal, BG_PALETTE, sizeof(backgroundPal));
 
 	//get the address of the tile and map blocks
 	u8* tileMemory = (u8*)BG_TILE_RAM(1);
@@ -51,8 +55,8 @@ int main(void) {
 
 
 	//copy the tiles into tile memory one after the other
-	swiCopy(redTile, tileMemory, 32);
-	swiCopy(greenTile, tileMemory + 64, 32);
+	//swiCopy(redTile, tileMemory, 32);
+	//swiCopy(greenTile, tileMemory + 64, 32);
 
 	//create a map in map memory
 	for(i = 0; i < 32 * 32; i++) {
