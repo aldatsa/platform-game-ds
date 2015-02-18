@@ -1,5 +1,7 @@
 #include <nds.h>
 
+#include "background.h"
+
 //create a tile called redTile
 u8 redTile[64] =
 {
@@ -60,6 +62,6 @@ int main(void) {
 	while(1) {
 		swiWaitForVBlank();
 	}
-	
+
 	return 0;
 }
