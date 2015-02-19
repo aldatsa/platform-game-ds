@@ -49,20 +49,11 @@ int main(void) {
 	dmaCopy(backgroundPal, BG_PALETTE, sizeof(backgroundPal));
 
 	//get the address of the tile and map blocks
-	u8* tileMemory = (u8*)BG_TILE_RAM(1);
 	u16* mapMemory = (u16*)BG_MAP_RAM(0);
-
-	//tell the DS where we are putting everything and set 256 color mode and that we are using a 32 by 32 tile map.
-	REG_BG0CNT = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1);
 
 	//load our palette
 	BG_PALETTE[1] = RGB15(31,0,0);
 	BG_PALETTE[2] = RGB15(0,31,0);
-
-
-	//copy the tiles into tile memory one after the other
-	//swiCopy(redTile, tileMemory, 32);
-	//swiCopy(greenTile, tileMemory + 64, 32);
 
 	while(1) {
 		int keys = 0;
