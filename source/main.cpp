@@ -1,6 +1,60 @@
 #include <nds.h>
 
+#include <man.h>
 #include "background.h"
+
+#define FRAMES_PER_ANIMATION 3
+
+//---------------------------------------------------------------------
+// The man sprite
+// he needs a single pointer to sprite memory
+// and a reference to his frame graphics so they
+// can be loaded as needed
+//---------------------------------------------------------------------
+typedef struct
+{
+	int x;
+	int y;
+
+	u16* sprite_gfx_mem;
+	u8*  frame_gfx;
+
+	int state;
+	int anim_frame;
+} Man;
+
+//---------------------------------------------------------------------
+// The state of the sprite (which way it is walking)
+//---------------------------------------------------------------------
+enum SpriteState {W_UP = 0, W_RIGHT = 1, W_DOWN = 2, W_LEFT = 3};
+
+//---------------------------------------------------------------------
+// Screen dimentions
+//---------------------------------------------------------------------
+enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 256};
+
+//---------------------------------------------------------------------
+// Animating a man requires us to copy in a new frame of data each time
+//---------------------------------------------------------------------
+void animateMan(Man *sprite)
+{
+	int frame = sprite->anim_frame + sprite->state * FRAMES_PER_ANIMATION;
+
+	u8* offset = sprite->frame_gfx + frame * 32*32;
+
+	dmaCopy(offset, sprite->sprite_gfx_mem, 32*32);
+}
+
+//---------------------------------------------------------------------
+// Initializing a man requires little work, allocate room for one frame
+// and set the frame gfx pointer
+//---------------------------------------------------------------------
+void initMan(Man *sprite, u8* gfx)
+{
+	sprite->sprite_gfx_mem = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
+
+	sprite->frame_gfx = (u8*)gfx;
+}
 
 //create a tile called redTile
 u16 world[1536] =
@@ -39,9 +93,12 @@ int main(void) {
 	int x = 0;
 	int y = 0;
 
+	Man man = {0,0};
+
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
 	vramSetBankA(VRAM_A_MAIN_BG);
+	vramSetBankB(VRAM_B_MAIN_SPRITE);
 
 	int bg = bgInit(0, BgType_Text8bpp, BgSize_T_256x256, 0,1);
 
@@ -50,6 +107,12 @@ int main(void) {
 
 	//get the address of the tile and map blocks
 	u16* mapMemory = (u16*)BG_MAP_RAM(0);
+
+	oamInit(&oamMain, SpriteMapping_1D_128, false);
+
+	initMan(&man, (u8*)manTiles);
+
+	dmaCopy(manPal, SPRITE_PALETTE, 512);
 
 	//load our palette
 	BG_PALETTE[1] = RGB15(31,0,0);
@@ -62,14 +125,33 @@ int main(void) {
 
 		keys = keysHeld();
 
-		if(keys & KEY_LEFT && x > 0) {
-			x--;
-		}
-		if(keys & KEY_RIGHT && x < 32) {
-			x++;
+		if(keys) {
+
+			if(keys & KEY_LEFT) { // && x > 0) {
+				if(man.x >= SCREEN_LEFT) man.x--;
+				man.state = W_LEFT;
+				x--;
+			}
+			if(keys & KEY_RIGHT) { // && x < 32) {
+				if(man.x <= SCREEN_RIGHT) man.x++;
+				man.state = W_RIGHT;
+				x++;
+			}
+
+			man.anim_frame++;
+
+			if(man.anim_frame >= FRAMES_PER_ANIMATION) man.anim_frame = 0;
+
 		}
 
+		animateMan(&man);
+
+		oamSet(&oamMain, 0, man.x, man.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			man.sprite_gfx_mem, -1, false, false, false, false, false);
+
 		swiWaitForVBlank();
+
+		oamUpdate(&oamMain);
 
 		//create a map in map memory
 		for (int j = 0; j < 24; j++) {
