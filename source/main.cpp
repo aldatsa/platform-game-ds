@@ -93,7 +93,7 @@ int main(void) {
 	int x = 0;
 	int y = 0;
 
-	Mario mario = {0,0};
+	Mario mario = {0,144};
 
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
