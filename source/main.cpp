@@ -1,12 +1,12 @@
 #include <nds.h>
 
-#include <man.h>
+#include <mario.h>
 #include "background.h"
 
 #define FRAMES_PER_ANIMATION 3
 
 //---------------------------------------------------------------------
-// The man sprite
+// The Mario sprite
 // he needs a single pointer to sprite memory
 // and a reference to his frame graphics so they
 // can be loaded as needed
@@ -21,7 +21,7 @@ typedef struct
 
 	int state;
 	int anim_frame;
-} Man;
+} Mario;
 
 //---------------------------------------------------------------------
 // The state of the sprite (which way it is walking)
@@ -34,9 +34,9 @@ enum SpriteState {W_UP = 0, W_RIGHT = 1, W_DOWN = 2, W_LEFT = 3};
 enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 256};
 
 //---------------------------------------------------------------------
-// Animating a man requires us to copy in a new frame of data each time
+// Animating Mario requires us to copy in a new frame of data each time
 //---------------------------------------------------------------------
-void animateMan(Man *sprite)
+void animateMario(Mario *sprite)
 {
 	int frame = sprite->anim_frame + sprite->state * FRAMES_PER_ANIMATION;
 
@@ -46,10 +46,10 @@ void animateMan(Man *sprite)
 }
 
 //---------------------------------------------------------------------
-// Initializing a man requires little work, allocate room for one frame
+// Initializing Mario requires little work, allocate room for one frame
 // and set the frame gfx pointer
 //---------------------------------------------------------------------
-void initMan(Man *sprite, u8* gfx)
+void initMario(Mario *sprite, u8* gfx)
 {
 	sprite->sprite_gfx_mem = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
 
@@ -93,7 +93,7 @@ int main(void) {
 	int x = 0;
 	int y = 0;
 
-	Man man = {0,0};
+	Mario mario = {0,0};
 
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
@@ -110,9 +110,9 @@ int main(void) {
 
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
 
-	initMan(&man, (u8*)manTiles);
+	initMario(&mario, (u8*)marioTiles);
 
-	dmaCopy(manPal, SPRITE_PALETTE, 512);
+	dmaCopy(marioPal, SPRITE_PALETTE, 512);
 
 	//load our palette
 	BG_PALETTE[1] = RGB15(31,0,0);
@@ -128,26 +128,26 @@ int main(void) {
 		if(keys) {
 
 			if(keys & KEY_LEFT) { // && x > 0) {
-				if(man.x >= SCREEN_LEFT) man.x--;
-				man.state = W_LEFT;
+				if(mario.x >= SCREEN_LEFT) mario.x--;
+				mario.state = W_LEFT;
 				x--;
 			}
 			if(keys & KEY_RIGHT) { // && x < 32) {
-				if(man.x <= SCREEN_RIGHT) man.x++;
-				man.state = W_RIGHT;
+				if(mario.x <= SCREEN_RIGHT) mario.x++;
+				mario.state = W_RIGHT;
 				x++;
 			}
 
-			man.anim_frame++;
+			mario.anim_frame++;
 
-			if(man.anim_frame >= FRAMES_PER_ANIMATION) man.anim_frame = 0;
+			if(mario.anim_frame >= FRAMES_PER_ANIMATION) mario.anim_frame = 0;
 
 		}
 
-		animateMan(&man);
+		animateMario(&mario);
 
-		oamSet(&oamMain, 0, man.x, man.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-			man.sprite_gfx_mem, -1, false, false, false, false, false);
+		oamSet(&oamMain, 0, mario.x, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			mario.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		swiWaitForVBlank();
 
