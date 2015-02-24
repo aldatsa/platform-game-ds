@@ -127,8 +127,8 @@ int main(void) {
 
 		if(keys) {
 
-			if(keys & KEY_LEFT) { // && x > 0) {
-				if(mario.x >= SCREEN_LEFT) mario.x--;
+			if((keys & KEY_LEFT) && (mario.x > SCREEN_LEFT)) {
+				mario.x--;
 				mario.state = W_LEFT;
 				x--;
 			}
