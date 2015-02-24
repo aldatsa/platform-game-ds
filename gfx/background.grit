@@ -1,5 +1,9 @@
+# Gfx data type
+-gu16
+# Exclude map data
 -m!
+# 8 bpp
 -gB8
 #metatile
--Mh4
--Mw4
+-Mh2
+-Mw2
