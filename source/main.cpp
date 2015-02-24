@@ -31,7 +31,7 @@ enum SpriteState {W_UP = 0, W_RIGHT = 1, W_DOWN = 2, W_LEFT = 3};
 //---------------------------------------------------------------------
 // Screen dimentions
 //---------------------------------------------------------------------
-enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 256};
+enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 224};
 
 //---------------------------------------------------------------------
 // Animating Mario requires us to copy in a new frame of data each time
@@ -130,12 +130,12 @@ int main(void) {
 			if((keys & KEY_LEFT) && (mario.x > SCREEN_LEFT)) {
 				mario.x--;
 				mario.state = W_LEFT;
-				x--;
+				//x--;
 			}
-			if(keys & KEY_RIGHT) { // && x < 32) {
-				if(mario.x <= SCREEN_RIGHT) mario.x++;
+			if((keys & KEY_RIGHT) && (mario.x < SCREEN_RIGHT)) {
+				mario.x++;
 				mario.state = W_RIGHT;
-				x++;
+				//x++;
 			}
 
 			mario.anim_frame++;
