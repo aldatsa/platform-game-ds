@@ -128,12 +128,24 @@ int main(void) {
 		if(keys) {
 
 			if((keys & KEY_LEFT) && (mario.x > SCREEN_LEFT)) {
-				mario.x--;
+
+				if (x <= 0) {
+					mario.x--;
+				} else {
+					x--;
+				}
+
 				mario.state = W_LEFT;
 				//x--;
 			}
 			if((keys & KEY_RIGHT) && (mario.x < SCREEN_RIGHT)) {
-				mario.x++;
+
+				if (mario.x < SCREEN_RIGHT / 2) {
+					mario.x++;
+				} else {
+					x++;
+				}
+
 				mario.state = W_RIGHT;
 				//x++;
 			}
