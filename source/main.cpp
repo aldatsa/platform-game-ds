@@ -16,6 +16,9 @@ typedef struct
 	int x;
 	int y;
 
+	int vx;
+	int vy;
+
 	u16* sprite_gfx_mem;
 	u8*  frame_gfx;
 
@@ -108,7 +111,9 @@ int main(void) {
 	int x = 0;
 	int y = 0;
 
-	Mario mario = {0,136};
+	int gravity = 1;
+
+	Mario mario = {0, 136, 0, 0};
 
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
@@ -135,10 +140,12 @@ int main(void) {
 
 	while(1) {
 		int keys = 0;
+		int keys_down = 0;
 
 		scanKeys();
 
 		keys = keysHeld();
+		keys_down = keysDown();
 
 		if(keys) {
 
@@ -174,9 +181,29 @@ int main(void) {
 
 			}
 
+			if (keys_down & KEY_A) {
+
+				// Jump Mario! Jump!
+				mario.vy = -10;
+			}
+
 			mario.anim_frame++;
 
 			if(mario.anim_frame >= FRAMES_PER_ANIMATION) mario.anim_frame = 0;
+
+		}
+
+		// Update Mario's position.
+		mario.y = mario.y + mario.vy;
+
+		if (mario.y < 135) {
+
+			//mario.x = mario.x + mario.vx;
+			mario.vy = mario.vy + gravity;
+
+		} else {
+
+			mario.vy = 0;
 
 		}
 
