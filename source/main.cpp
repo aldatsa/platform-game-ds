@@ -165,14 +165,14 @@ int main(void) {
 
 			if(keys & KEY_RIGHT) {
 
-				if ((x > 0) && (x < WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES - MARIO_WIDTH_TILES)) {
+				if ((x > 0) && (x < WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES)) {
 					x++;
 				} else if (mario.x < SCREEN_RIGHT / 2) {
 					mario.x++;
 				} else if (mario.x == SCREEN_RIGHT / 2) {
 					mario.x++;
 					x = 1;
-				} else if (x == WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES - MARIO_WIDTH_TILES
+				} else if (x == WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES
 							&& mario.x < SCREEN_RIGHT - MARIO_WIDTH) {
 					mario.x++;
 				}
