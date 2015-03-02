@@ -5,6 +5,12 @@
 
 #define FRAMES_PER_ANIMATION 3
 
+class Camera {
+	public:
+		int x;
+		int y;
+};
+
 //---------------------------------------------------------------------
 // The Mario sprite
 // he needs a single pointer to sprite memory
@@ -108,8 +114,7 @@ int main(void) {
 	//---------------------------------------------------------------------------------
 	int i;
 
-	int x = 0;
-	int y = 0;
+	Camera Cam;
 
 	int gravity = 1;
 
@@ -151,12 +156,12 @@ int main(void) {
 
 			if((keys & KEY_LEFT) && (mario.x > SCREEN_LEFT)) {
 
-				if (x <= 0) {
+				if (Cam.x <= 0) {
 					mario.x--;
 				} else if (mario.x > SCREEN_RIGHT / 2) {
 					mario.x--;
 				} else {
-					x--;
+					Cam.x--;
 				}
 
 				mario.state = W_LEFT;
@@ -165,14 +170,14 @@ int main(void) {
 
 			if(keys & KEY_RIGHT) {
 
-				if ((x > 0) && (x < WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES)) {
-					x++;
+				if ((Cam.x > 0) && (Cam.x < WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES)) {
+					Cam.x++;
 				} else if (mario.x < SCREEN_RIGHT / 2) {
 					mario.x++;
 				} else if (mario.x == SCREEN_RIGHT / 2) {
 					mario.x++;
-					x = 1;
-				} else if (x == WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES
+					Cam.x = 1;
+				} else if (Cam.x == WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES
 							&& mario.x < SCREEN_RIGHT - MARIO_WIDTH) {
 					mario.x++;
 				}
@@ -219,7 +224,7 @@ int main(void) {
 		//create a map in map memory
 		for (int j = 0; j < SCREEN_HEIGHT_TILES; j++) {
 			for(int i = 0; i < SCREEN_WIDTH_TILES; i++) {
-				mapMemory[i + SCREEN_WIDTH_TILES * j] = world[x + i + j * WORLD_WIDTH_TILES];
+				mapMemory[i + SCREEN_WIDTH_TILES * j] = world[Cam.x + i + j * WORLD_WIDTH_TILES];
 			}
 		}
 	}
