@@ -40,7 +40,7 @@ enum SpriteState {W_UP = 0, W_RIGHT = 1, W_DOWN = 2, W_LEFT = 3};
 //---------------------------------------------------------------------
 // Screen dimentions
 //---------------------------------------------------------------------
-enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 256};
+enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 256, TILE_WIDTH = 8, TILE_HEIGHT = 8};
 
 //---------------------------------------------------------------------
 // Screen and World dimentions in 8x8 tiles
@@ -154,33 +154,17 @@ int main(void) {
 
 		if(keys) {
 
-			if((keys & KEY_LEFT) && (mario.x > SCREEN_LEFT)) {
+			if((keys & KEY_LEFT) && (mario.x > 0)) {
 
-				if (Cam.x <= 0) {
-					mario.x--;
-				} else if (mario.x > SCREEN_RIGHT / 2) {
-					mario.x--;
-				} else {
-					Cam.x--;
-				}
+				mario.x--;
 
 				mario.state = W_LEFT;
 
 			}
 
-			if(keys & KEY_RIGHT) {
+			if((keys & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
 
-				if ((Cam.x > 0) && (Cam.x < WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES)) {
-					Cam.x++;
-				} else if (mario.x < SCREEN_RIGHT / 2) {
-					mario.x++;
-				} else if (mario.x == SCREEN_RIGHT / 2) {
-					mario.x++;
-					Cam.x = 1;
-				} else if (Cam.x == WORLD_WIDTH_TILES - SCREEN_WIDTH_TILES
-							&& mario.x < SCREEN_RIGHT - MARIO_WIDTH) {
-					mario.x++;
-				}
+				mario.x++;
 
 				mario.state = W_RIGHT;
 
@@ -214,8 +198,28 @@ int main(void) {
 
 		animateMario(&mario);
 
-		oamSet(&oamMain, 0, mario.x, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-			mario.sprite_gfx_mem, -1, false, false, false, false, false);
+		if (mario.x < SCREEN_WIDTH / 2) {
+
+			Cam.x = 0;
+
+			oamSet(&oamMain, 0, mario.x, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+				mario.sprite_gfx_mem, -1, false, false, false, false, false);
+
+		} else if (mario.x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
+
+			Cam.x = WORLD_WIDTH - SCREEN_WIDTH;
+
+			oamSet(&oamMain, 0, mario.x - WORLD_WIDTH - SCREEN_WIDTH, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+				mario.sprite_gfx_mem, -1, false, false, false, false, false);
+
+		} else {
+
+			Cam.x = mario.x - SCREEN_WIDTH / 2;
+
+			oamSet(&oamMain, 0, SCREEN_WIDTH / 2, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+				mario.sprite_gfx_mem, -1, false, false, false, false, false);
+
+		}
 
 		swiWaitForVBlank();
 
@@ -224,7 +228,7 @@ int main(void) {
 		//create a map in map memory
 		for (int j = 0; j < SCREEN_HEIGHT_TILES; j++) {
 			for(int i = 0; i < SCREEN_WIDTH_TILES; i++) {
-				mapMemory[i + SCREEN_WIDTH_TILES * j] = world[Cam.x + i + j * WORLD_WIDTH_TILES];
+				mapMemory[i + SCREEN_WIDTH_TILES * j] = world[Cam.x / TILE_WIDTH + i + j * WORLD_WIDTH_TILES];
 			}
 		}
 	}
