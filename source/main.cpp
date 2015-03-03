@@ -156,15 +156,13 @@ int main(void) {
 
 			if((keys_held & KEY_LEFT) && (mario.x > 0)) {
 
-				mario.x--;
+				mario.vx = -1;
 
 				mario.state = W_LEFT;
 
-			}
+			} else if ((keys_held & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
 
-			if((keys_held & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
-
-				mario.x++;
+				mario.vx = 1;
 
 				mario.state = W_RIGHT;
 
@@ -180,9 +178,14 @@ int main(void) {
 
 			if(mario.anim_frame >= FRAMES_PER_ANIMATION) mario.anim_frame = 0;
 
+		} else {
+
+			mario.vx = 0;
+
 		}
 
 		// Update Mario's position.
+		mario.x = mario.x + mario.vx;
 		mario.y = mario.y + mario.vy;
 
 		if (mario.y < 135) {
