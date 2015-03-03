@@ -144,17 +144,17 @@ int main(void) {
 	//BG_PALETTE[2] = RGB15(0,31,0);
 
 	while(1) {
-		int keys = 0;
+		int keys_held = 0;
 		int keys_down = 0;
 
 		scanKeys();
 
-		keys = keysHeld();
+		keys_held = keysHeld();
 		keys_down = keysDown();
 
-		if(keys) {
+		if(keys_held) {
 
-			if((keys & KEY_LEFT) && (mario.x > 0)) {
+			if((keys_held & KEY_LEFT) && (mario.x > 0)) {
 
 				mario.x--;
 
@@ -162,7 +162,7 @@ int main(void) {
 
 			}
 
-			if((keys & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
+			if((keys_held & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
 
 				mario.x++;
 
