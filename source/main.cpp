@@ -152,38 +152,54 @@ int main(void) {
 		keys_held = keysHeld();
 		keys_down = keysDown();
 
-		if(keys_held) {
-
-			if((keys_held & KEY_LEFT) && (mario.x > 0)) {
-
+		if((keys_held & KEY_LEFT) && (mario.x > 0)) {
+			
+			if (keys_held & KEY_B) {
+				
+				mario.vx = -4;
+				
+			} else {
+				
 				mario.vx = -1;
+				
+			}
+			
+			mario.state = W_LEFT;
 
-				mario.state = W_LEFT;
+		} else if ((keys_held & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
 
-			} else if ((keys_held & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
-
+			if (keys_held & KEY_B) {
+				
+				mario.vx = 4;
+				
+			} else {
+				
 				mario.vx = 1;
-
-				mario.state = W_RIGHT;
-
+				
 			}
 
-			if (keys_down & KEY_A) {
+			mario.state = W_RIGHT;
 
-				// Jump Mario! Jump!
-				mario.vy = -10;
-			}
+		} else {
+			
+			mario.vx = 0;
+			
+		}
 
+		if (keys_down & KEY_A) {
+
+			// Jump Mario! Jump!
+			mario.vy = -10;
+		}
+		
+		if (mario.vx != 0) {
+			
 			mario.anim_frame++;
 
 			if(mario.anim_frame >= FRAMES_PER_ANIMATION) mario.anim_frame = 0;
-
-		} else {
-
-			mario.vx = 0;
-
+		
 		}
-
+		
 		// Update Mario's position.
 		mario.x = mario.x + mario.vx;
 		mario.y = mario.y + mario.vy;
