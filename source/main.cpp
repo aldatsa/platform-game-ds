@@ -3,75 +3,13 @@
 #include <mario.h>
 #include "background.h"
 
-#define FRAMES_PER_ANIMATION 3
+#include "Player.hpp"
 
 class Camera {
 	public:
 		int x;
 		int y;
 };
-
-class Player {
-	
-	private:
-		u8*  frame_gfx;
-	
-	public:
-		int x;
-		int y;
-		
-		int vx;
-		int vy;
-		
-		int state;
-		int anim_frame;
-		
-		u16* sprite_gfx_mem;
-		
-		Player(u8* gfx, int x, int y, int vx, int vy);
-		
-		void calculateNewPosition();
-		
-		void animate();
-		
-};
-
-Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
-	
-	this->x = x;
-	this->y = y;
-	
-	this->vx = vx;
-	this->vy = vy;
-	
-	this->state = 0;
-	this->anim_frame = 0;
-	
-	// Allocate room for one frame.
-	this->sprite_gfx_mem = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
-	
-	// Set the frame gfx pointer
-	this->frame_gfx = (u8*)gfx;
-	
-}
-
-void Player::calculateNewPosition() {
-	
-	this->x = this->x + this->vx;
-	this->y = this->y + this->vy;
-	
-}
-
-// Animating the player requires us to copy in a new frame of data each time.
-void Player::animate() {
-	
-	int frame = this->anim_frame + this->state * FRAMES_PER_ANIMATION;
-
-	u8* offset = this->frame_gfx + frame * 32*32;
-
-	dmaCopy(offset, this->sprite_gfx_mem, 32*32);
-	
-}
 
 //---------------------------------------------------------------------
 // The state of the sprite (which way it is walking)
@@ -205,14 +143,6 @@ int main(void) {
 
 			// Jump Mario! Jump!
 			player.vy = -10;
-		}
-		
-		if (player.vx != 0) {
-			
-			player.anim_frame++;
-
-			if(player.anim_frame >= FRAMES_PER_ANIMATION) player.anim_frame = 0;
-		
 		}
 		
 		// Calculate Mario's new position.
