@@ -12,43 +12,66 @@ class Camera {
 };
 
 class Player {
+	
+	private:
+		u8*  frame_gfx;
+	
 	public:
 		int x;
 		int y;
+		
 		int vx;
 		int vy;
 		
-		Player(int x, int y, int vx, int vy);
+		int state;
+		int anim_frame;
+		
+		u16* sprite_gfx_mem;
+		
+		Player(u8* gfx, int x, int y, int vx, int vy);
 		
 		void calculateNewPosition();
+		
+		void animate();
+		
 };
 
-Player::Player(int x = 0, int y = 0, int vx = 0, int vy = 0) {
+Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
+	
 	this->x = x;
 	this->y = y;
+	
 	this->vx = vx;
 	this->vy = vy;
+	
+	this->state = 0;
+	this->anim_frame = 0;
+	
+	// Allocate room for one frame.
+	this->sprite_gfx_mem = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
+	
+	// Set the frame gfx pointer
+	this->frame_gfx = (u8*)gfx;
+	
 }
 
 void Player::calculateNewPosition() {
+	
 	this->x = this->x + this->vx;
 	this->y = this->y + this->vy;
+	
 }
 
-//---------------------------------------------------------------------
-// The Mario sprite
-// he needs a single pointer to sprite memory
-// and a reference to his frame graphics so they
-// can be loaded as needed
-//---------------------------------------------------------------------
-typedef struct
-{
-	u16* sprite_gfx_mem;
-	u8*  frame_gfx;
+// Animating the player requires us to copy in a new frame of data each time.
+void Player::animate() {
+	
+	int frame = this->anim_frame + this->state * FRAMES_PER_ANIMATION;
 
-	int state;
-	int anim_frame;
-} Mario;
+	u8* offset = this->frame_gfx + frame * 32*32;
+
+	dmaCopy(offset, this->sprite_gfx_mem, 32*32);
+	
+}
 
 //---------------------------------------------------------------------
 // The state of the sprite (which way it is walking)
@@ -74,29 +97,6 @@ enum {WORLD_WIDTH = 1024, WORLD_HEIGHT = 192};
 // Mario's sprite dimentions in pixels
 //---------------------------------------------------------------------
 enum {MARIO_WIDTH = 32, MARIO_HEIGHT = 32, MARIO_WIDTH_TILES = 3, MARIO_HEIGHT_TILES = 3};
-
-//---------------------------------------------------------------------
-// Animating Mario requires us to copy in a new frame of data each time
-//---------------------------------------------------------------------
-void animateMario(Mario *sprite)
-{
-	int frame = sprite->anim_frame + sprite->state * FRAMES_PER_ANIMATION;
-
-	u8* offset = sprite->frame_gfx + frame * 32*32;
-
-	dmaCopy(offset, sprite->sprite_gfx_mem, 32*32);
-}
-
-//---------------------------------------------------------------------
-// Initializing Mario requires little work, allocate room for one frame
-// and set the frame gfx pointer
-//---------------------------------------------------------------------
-void initMario(Mario *sprite, u8* gfx)
-{
-	sprite->sprite_gfx_mem = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
-
-	sprite->frame_gfx = (u8*)gfx;
-}
 
 //create a tile called redTile
 u16 world[3072] =
@@ -133,11 +133,9 @@ int main(void) {
 	int i;
 
 	Camera Cam;
-	Player player(0, 136, 0, 0);
+	Player player((u8*)marioTiles, 0, 136, 0, 0);
 
 	int gravity = 1;
-
-	Mario mario = {};
 
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
@@ -153,8 +151,6 @@ int main(void) {
 	u16* mapMemory = (u16*)BG_MAP_RAM(0);
 
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
-
-	initMario(&mario, (u8*)marioTiles);
 
 	dmaCopy(marioPal, SPRITE_PALETTE, 512);
 
@@ -183,7 +179,7 @@ int main(void) {
 				
 			}
 			
-			mario.state = W_LEFT;
+			player.state = W_LEFT;
 
 		} else if ((keys_held & KEY_RIGHT) && (player.x < WORLD_WIDTH - MARIO_WIDTH) ) {
 
@@ -197,7 +193,7 @@ int main(void) {
 				
 			}
 
-			mario.state = W_RIGHT;
+			player.state = W_RIGHT;
 
 		} else {
 			
@@ -213,9 +209,9 @@ int main(void) {
 		
 		if (player.vx != 0) {
 			
-			mario.anim_frame++;
+			player.anim_frame++;
 
-			if(mario.anim_frame >= FRAMES_PER_ANIMATION) mario.anim_frame = 0;
+			if(player.anim_frame >= FRAMES_PER_ANIMATION) player.anim_frame = 0;
 		
 		}
 		
@@ -233,28 +229,28 @@ int main(void) {
 
 		}
 
-		animateMario(&mario);
+		player.animate();
 
 		if (player.x < SCREEN_WIDTH / 2) {
 
 			Cam.x = 0;
 
 			oamSet(&oamMain, 0, player.x, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-				mario.sprite_gfx_mem, -1, false, false, false, false, false);
+				player.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		} else if (player.x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
 
 			Cam.x = WORLD_WIDTH - SCREEN_WIDTH;
 
 			oamSet(&oamMain, 0, player.x - WORLD_WIDTH - SCREEN_WIDTH, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-				mario.sprite_gfx_mem, -1, false, false, false, false, false);
+				player.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		} else {
 
 			Cam.x = player.x - SCREEN_WIDTH / 2;
 
 			oamSet(&oamMain, 0, SCREEN_WIDTH / 2, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-				mario.sprite_gfx_mem, -1, false, false, false, false, false);
+				player.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		}
 
