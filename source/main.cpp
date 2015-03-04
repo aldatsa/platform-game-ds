@@ -11,6 +11,18 @@ class Camera {
 		int y;
 };
 
+class Player {
+	public:
+		int x;
+		int y;
+		Player(int x, int y);
+};
+
+Player::Player(int tmp_x, int tmp_y) {
+	x = tmp_x;
+	y = tmp_y;
+}
+
 //---------------------------------------------------------------------
 // The Mario sprite
 // he needs a single pointer to sprite memory
@@ -115,6 +127,7 @@ int main(void) {
 	int i;
 
 	Camera Cam;
+	Player player(0, 128);
 
 	int gravity = 1;
 
@@ -152,7 +165,7 @@ int main(void) {
 		keys_held = keysHeld();
 		keys_down = keysDown();
 
-		if((keys_held & KEY_LEFT) && (mario.x > 0)) {
+		if((keys_held & KEY_LEFT) && (player.x > 0)) {
 			
 			if (keys_held & KEY_B) {
 				
@@ -166,7 +179,7 @@ int main(void) {
 			
 			mario.state = W_LEFT;
 
-		} else if ((keys_held & KEY_RIGHT) && (mario.x < WORLD_WIDTH - MARIO_WIDTH) ) {
+		} else if ((keys_held & KEY_RIGHT) && (player.x < WORLD_WIDTH - MARIO_WIDTH) ) {
 
 			if (keys_held & KEY_B) {
 				
@@ -201,12 +214,12 @@ int main(void) {
 		}
 		
 		// Update Mario's position.
-		mario.x = mario.x + mario.vx;
-		mario.y = mario.y + mario.vy;
+		player.x = player.x + mario.vx;
+		player.y = player.y + mario.vy;
 
-		if (mario.y < 135) {
+		if (player.y < 135) {
 
-			//mario.x = mario.x + mario.vx;
+			//player.x = player.x + mario.vx;
 			mario.vy = mario.vy + gravity;
 
 		} else {
@@ -217,25 +230,25 @@ int main(void) {
 
 		animateMario(&mario);
 
-		if (mario.x < SCREEN_WIDTH / 2) {
+		if (player.x < SCREEN_WIDTH / 2) {
 
 			Cam.x = 0;
 
-			oamSet(&oamMain, 0, mario.x, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			oamSet(&oamMain, 0, player.x, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
 				mario.sprite_gfx_mem, -1, false, false, false, false, false);
 
-		} else if (mario.x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
+		} else if (player.x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
 
 			Cam.x = WORLD_WIDTH - SCREEN_WIDTH;
 
-			oamSet(&oamMain, 0, mario.x - WORLD_WIDTH - SCREEN_WIDTH, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			oamSet(&oamMain, 0, player.x - WORLD_WIDTH - SCREEN_WIDTH, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
 				mario.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		} else {
 
-			Cam.x = mario.x - SCREEN_WIDTH / 2;
+			Cam.x = player.x - SCREEN_WIDTH / 2;
 
-			oamSet(&oamMain, 0, SCREEN_WIDTH / 2, mario.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			oamSet(&oamMain, 0, SCREEN_WIDTH / 2, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
 				mario.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		}
