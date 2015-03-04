@@ -17,7 +17,10 @@ class Player {
 		int y;
 		int vx;
 		int vy;
+		
 		Player(int x, int y, int vx, int vy);
+		
+		void calculateNewPosition();
 };
 
 Player::Player(int x = 0, int y = 0, int vx = 0, int vy = 0) {
@@ -25,6 +28,11 @@ Player::Player(int x = 0, int y = 0, int vx = 0, int vy = 0) {
 	this->y = y;
 	this->vx = vx;
 	this->vy = vy;
+}
+
+void Player::calculateNewPosition() {
+	this->x = this->x + this->vx;
+	this->y = this->y + this->vy;
 }
 
 //---------------------------------------------------------------------
@@ -211,9 +219,8 @@ int main(void) {
 		
 		}
 		
-		// Update Mario's position.
-		player.x = player.x + player.vx;
-		player.y = player.y + player.vy;
+		// Calculate Mario's new position.
+		player.calculateNewPosition();
 
 		if (player.y < 135) {
 
