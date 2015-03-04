@@ -15,12 +15,16 @@ class Player {
 	public:
 		int x;
 		int y;
-		Player(int x, int y);
+		int vx;
+		int vy;
+		Player(int x, int y, int vx, int vy);
 };
 
-Player::Player(int tmp_x, int tmp_y) {
-	x = tmp_x;
-	y = tmp_y;
+Player::Player(int x = 0, int y = 0, int vx = 0, int vy = 0) {
+	this->x = x;
+	this->y = y;
+	this->vx = vx;
+	this->vy = vy;
 }
 
 //---------------------------------------------------------------------
@@ -31,12 +35,6 @@ Player::Player(int tmp_x, int tmp_y) {
 //---------------------------------------------------------------------
 typedef struct
 {
-	int x;
-	int y;
-
-	int vx;
-	int vy;
-
 	u16* sprite_gfx_mem;
 	u8*  frame_gfx;
 
@@ -127,11 +125,11 @@ int main(void) {
 	int i;
 
 	Camera Cam;
-	Player player(0, 128);
+	Player player(0, 136, 0, 0);
 
 	int gravity = 1;
 
-	Mario mario = {0, 136, 0, 0};
+	Mario mario = {};
 
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
@@ -169,11 +167,11 @@ int main(void) {
 			
 			if (keys_held & KEY_B) {
 				
-				mario.vx = -4;
+				player.vx = -4;
 				
 			} else {
 				
-				mario.vx = -1;
+				player.vx = -1;
 				
 			}
 			
@@ -183,11 +181,11 @@ int main(void) {
 
 			if (keys_held & KEY_B) {
 				
-				mario.vx = 4;
+				player.vx = 4;
 				
 			} else {
 				
-				mario.vx = 1;
+				player.vx = 1;
 				
 			}
 
@@ -195,17 +193,17 @@ int main(void) {
 
 		} else {
 			
-			mario.vx = 0;
+			player.vx = 0;
 			
 		}
 
 		if (keys_down & KEY_A) {
 
 			// Jump Mario! Jump!
-			mario.vy = -10;
+			player.vy = -10;
 		}
 		
-		if (mario.vx != 0) {
+		if (player.vx != 0) {
 			
 			mario.anim_frame++;
 
@@ -214,17 +212,17 @@ int main(void) {
 		}
 		
 		// Update Mario's position.
-		player.x = player.x + mario.vx;
-		player.y = player.y + mario.vy;
+		player.x = player.x + player.vx;
+		player.y = player.y + player.vy;
 
 		if (player.y < 135) {
 
-			//player.x = player.x + mario.vx;
-			mario.vy = mario.vy + gravity;
+			//player.x = player.x + player.vx;
+			player.vy = player.vy + gravity;
 
 		} else {
 
-			mario.vy = 0;
+			player.vy = 0;
 
 		}
 
