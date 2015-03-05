@@ -5,11 +5,43 @@
 
 #include "Player.hpp"
 
+#define TILE_WIDTH 8
+#define TILE_HEIGHT 8
+#define SCREEN_HEIGHT_TILES 24
+#define SCREEN_WIDTH_TILES 32
+#define WORLD_WIDTH_TILES 128
+#define WORLD_HEIGHT_TILES 24
+
 class Camera {
+	private:
+		u16* mapMemory;
+		u16* level;
 	public:
 		int x;
 		int y;
+		
+		Camera(u16* level);
+		void update();
 };
+
+Camera::Camera(u16* level) {
+	
+	this->level = level;
+	
+	//get the address of the tile and map blocks
+	mapMemory = (u16*)BG_MAP_RAM(0);
+	
+}
+
+void Camera::update() {
+	
+	// Update the map in map memory
+	for (int j = 0; j < SCREEN_HEIGHT_TILES; j++) {
+		for(int i = 0; i < SCREEN_WIDTH_TILES; i++) {
+			this->mapMemory[i + SCREEN_WIDTH_TILES * j] = this->level[this->x / TILE_WIDTH + i + j * WORLD_WIDTH_TILES];
+		}
+	}
+}
 
 //---------------------------------------------------------------------
 // The state of the sprite (which way it is walking)
@@ -19,12 +51,7 @@ enum SpriteState {W_UP = 0, W_RIGHT = 1, W_DOWN = 2, W_LEFT = 3};
 //---------------------------------------------------------------------
 // Screen dimentions
 //---------------------------------------------------------------------
-enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 256, TILE_WIDTH = 8, TILE_HEIGHT = 8};
-
-//---------------------------------------------------------------------
-// Screen and World dimentions in 8x8 tiles
-//---------------------------------------------------------------------
-enum {WORLD_WIDTH_TILES = 128, WORLD_HEIGHT_TILES = 24, SCREEN_WIDTH_TILES = 32, SCREEN_HEIGHT_TILES = 24};
+enum {SCREEN_TOP = 0, SCREEN_BOTTOM = 192, SCREEN_LEFT = 0, SCREEN_RIGHT = 256};
 
 //---------------------------------------------------------------------
 // World dimentions in pixels
@@ -70,7 +97,8 @@ int main(void) {
 	//---------------------------------------------------------------------------------
 	int i;
 
-	Camera Cam;
+	Camera Cam((u16*) world);
+	
 	Player player((u8*)marioTiles, 0, 136, 0, 0);
 
 	int gravity = 1;
@@ -84,9 +112,6 @@ int main(void) {
 
 	dmaCopy(backgroundTiles, bgGetGfxPtr(bg), sizeof(backgroundTiles));
 	dmaCopy(backgroundPal, BG_PALETTE, sizeof(backgroundPal));
-
-	//get the address of the tile and map blocks
-	u16* mapMemory = (u16*)BG_MAP_RAM(0);
 
 	oamInit(&oamMain, SpriteMapping_1D_128, false);
 
@@ -187,13 +212,9 @@ int main(void) {
 		swiWaitForVBlank();
 
 		oamUpdate(&oamMain);
-
-		//create a map in map memory
-		for (int j = 0; j < SCREEN_HEIGHT_TILES; j++) {
-			for(int i = 0; i < SCREEN_WIDTH_TILES; i++) {
-				mapMemory[i + SCREEN_WIDTH_TILES * j] = world[Cam.x / TILE_WIDTH + i + j * WORLD_WIDTH_TILES];
-			}
-		}
+		
+		Cam.update();
+		
 	}
 
 	return 0;
