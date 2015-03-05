@@ -61,7 +61,7 @@ int main(void) {
 	//---------------------------------------------------------------------------------
 	int i;
 
-	Camera Cam((u16*) world);
+	Camera camera((u16*) world);
 	
 	Player player((u8*)marioTiles, 0, 136, 0, 0);
 
@@ -152,21 +152,21 @@ int main(void) {
 
 		if (player.x < SCREEN_WIDTH / 2) {
 
-			Cam.x = 0;
+			camera.x = 0;
 
 			oamSet(&oamMain, 0, player.x, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
 				player.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		} else if (player.x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
 
-			Cam.x = WORLD_WIDTH - SCREEN_WIDTH;
+			camera.x = WORLD_WIDTH - SCREEN_WIDTH;
 
 			oamSet(&oamMain, 0, player.x - WORLD_WIDTH - SCREEN_WIDTH, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
 				player.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		} else {
 
-			Cam.x = player.x - SCREEN_WIDTH / 2;
+			camera.x = player.x - SCREEN_WIDTH / 2;
 
 			oamSet(&oamMain, 0, SCREEN_WIDTH / 2, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
 				player.sprite_gfx_mem, -1, false, false, false, false, false);
@@ -177,7 +177,7 @@ int main(void) {
 
 		oamUpdate(&oamMain);
 		
-		Cam.update();
+		camera.update();
 		
 	}
 
