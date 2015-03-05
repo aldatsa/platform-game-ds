@@ -23,6 +23,17 @@ Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
 	
 }
 
+void Player::tileCollisionDetection() {
+	
+	// Stop the movement of the player when it hits the floor.
+	if (this->y == 136 && this->vy >= 0) {
+		
+		this->vy = 0;
+	
+	}
+	
+}
+
 void Player::calculateNewPosition() {
 	
 	this->x = this->x + this->vx;
