@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <nds.h>
 
 #include <mario.h>
@@ -67,6 +69,8 @@ int main(void) {
 
 	int gravity = 1;
 
+	consoleDemoInit();
+	
 	//set video mode and map vram to the background
 	videoSetMode(MODE_0_2D | DISPLAY_BG0_ACTIVE);
 	vramSetBankA(VRAM_A_MAIN_BG);
