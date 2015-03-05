@@ -138,19 +138,20 @@ int main(void) {
 			player.vy = -10;
 		}
 		
+		// Stop the movement of the player when it hits the floor.
+		if (player.y == 136 && player.vy >= 0) {
+			
+			player.vy = 0;
+		
+		} else {
+			
+			// Apply gravity.
+			player.vy = player.vy + gravity;
+			
+		}
+		
 		// Calculate Mario's new position.
 		player.calculateNewPosition();
-
-		if (player.y < 135) {
-
-			//player.x = player.x + player.vx;
-			player.vy = player.vy + gravity;
-
-		} else {
-
-			player.vy = 0;
-
-		}
 
 		player.animate();
 
