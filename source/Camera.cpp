@@ -14,7 +14,7 @@ Camera::Camera(u16* level) {
 	this->level = level;
 	
 	//get the address of the tile and map blocks
-	mapMemory = (u16*)BG_MAP_RAM(0);
+	this->mapMemory = (u16*)BG_MAP_RAM(0);
 	
 }
 

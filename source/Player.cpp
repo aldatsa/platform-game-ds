@@ -1,8 +1,19 @@
+#include <stdio.h>
+
 #include <nds.h>
 
 #include "Player.hpp"
 
 #define FRAMES_PER_ANIMATION 3
+
+#define TILE_WIDTH 8
+#define TILE_HEIGHT 8
+
+#define MARIO_WIDTH 32
+#define MARIO_HEIGHT 32
+
+#define WORLD_WIDTH_TILES 128
+#define WORLD_HEIGHT_TILES 24
 
 Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
 	
@@ -23,10 +34,28 @@ Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
 	
 }
 
-void Player::tileCollisionDetection() {
+void Player::tileCollisionDetection(u16* level) {
 	
-	// Stop the movement of the player when it hits the floor.
-	if (this->y == 136 && this->vy >= 0) {
+	// Tiles that the player can't pass through. 
+	int solid_tiles[2] = {12, 13};
+	
+	int tile_x = this->x / TILE_WIDTH;
+	int tile_y = (this->y + MARIO_HEIGHT + 1) / TILE_HEIGHT;
+	int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;
+	
+	int collision = false;
+	
+	for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+		
+		if (level[tile_index] == solid_tiles[i]) {
+			collision = true;
+		}
+		
+	}
+	
+	// Stop the falling movement of the player when it hits a solid tile.
+	if (collision == true && this->vy > 0) {
+	//if (this->y == 136 && this->vy >= 0) {
 		
 		this->vy = 0;
 	

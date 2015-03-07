@@ -29,7 +29,6 @@ enum {WORLD_WIDTH = 1024, WORLD_HEIGHT = 192};
 //---------------------------------------------------------------------
 enum {MARIO_WIDTH = 32, MARIO_HEIGHT = 32, MARIO_WIDTH_TILES = 3, MARIO_HEIGHT_TILES = 3};
 
-//create a tile called redTile
 u16 world[3072] =
 {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -141,7 +140,7 @@ int main(void) {
 		// Apply gravity.
 		player.vy = player.vy + gravity;
 		
-		player.tileCollisionDetection();
+		player.tileCollisionDetection((u16*) world);
 		
 		// Calculate Mario's new position.
 		player.calculateNewPosition();
