@@ -27,7 +27,7 @@ enum {WORLD_WIDTH = 1024, WORLD_HEIGHT = 192};
 //---------------------------------------------------------------------
 // Mario's sprite dimentions in pixels
 //---------------------------------------------------------------------
-enum {MARIO_WIDTH = 32, MARIO_HEIGHT = 32, MARIO_WIDTH_TILES = 3, MARIO_HEIGHT_TILES = 3};
+enum {MARIO_WIDTH = 32, MARIO_HEIGHT = 32};
 
 u16 world[3072] =
 {

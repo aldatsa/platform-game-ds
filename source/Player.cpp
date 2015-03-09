@@ -12,6 +12,9 @@
 #define MARIO_WIDTH 32
 #define MARIO_HEIGHT 32
 
+#define MARIO_WIDTH_TILES 3
+#define MARIO_HEIGHT_TILES 3
+
 #define WORLD_WIDTH_TILES 128
 #define WORLD_HEIGHT_TILES 24
 
@@ -44,7 +47,7 @@ void Player::tileCollisionDetection(u16* level) {
 	
 	int tile_x = this->x / TILE_WIDTH;
 	
-	int tile_y = ((this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT) - ((this->previous_y - this->y) / TILE_HEIGHT);
+	int tile_y = ((this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT) - ((this->y - this->previous_y) / TILE_HEIGHT);
 	
 	int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;
 	
@@ -58,10 +61,15 @@ void Player::tileCollisionDetection(u16* level) {
 		
 	}
 	
+	if (this->vy != 1) {
+		printf("%d\n", this->vy);
+		printf("%d\n", tile_y);
+	}
+	
 	// Stop the falling movement of the player when it hits a solid tile.
 	if (collision == true) {
 		
-		this->y = (tile_y - 3 - 1) * TILE_HEIGHT;
+		this->y = (tile_y - MARIO_HEIGHT_TILES - 1) * TILE_HEIGHT;
 		
 		this->vy = 0;
 	
