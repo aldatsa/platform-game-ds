@@ -140,10 +140,10 @@ int main(void) {
 		// Apply gravity.
 		player.vy = player.vy + gravity;
 		
-		player.tileCollisionDetection((u16*) world);
-		
 		// Calculate Mario's new position.
 		player.calculateNewPosition();
+		
+		player.tileCollisionDetection((u16*) world);
 
 		player.animate();
 

@@ -14,6 +14,9 @@ class Player {
 		int vx;
 		int vy;
 		
+		int previous_x;
+		int previous_y;
+		
 		int state;
 		
 		u16* sprite_gfx_mem;

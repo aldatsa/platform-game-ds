@@ -23,6 +23,9 @@ Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
 	this->vx = vx;
 	this->vy = vy;
 	
+	this->previous_x = x;
+	this->previous_y = y;
+	
 	this->state = 0;
 	this->anim_frame = 0;
 	
@@ -40,7 +43,9 @@ void Player::tileCollisionDetection(u16* level) {
 	int solid_tiles[2] = {12, 13};
 	
 	int tile_x = this->x / TILE_WIDTH;
-	int tile_y = (this->y + MARIO_HEIGHT + 1) / TILE_HEIGHT;
+	
+	int tile_y = ((this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT) - ((this->previous_y - this->y) / TILE_HEIGHT);
+	
 	int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;
 	
 	int collision = false;
@@ -54,8 +59,9 @@ void Player::tileCollisionDetection(u16* level) {
 	}
 	
 	// Stop the falling movement of the player when it hits a solid tile.
-	if (collision == true && this->vy > 0) {
-	//if (this->y == 136 && this->vy >= 0) {
+	if (collision == true) {
+		
+		this->y = (tile_y - 3 - 1) * TILE_HEIGHT;
 		
 		this->vy = 0;
 	
@@ -64,6 +70,9 @@ void Player::tileCollisionDetection(u16* level) {
 }
 
 void Player::calculateNewPosition() {
+	
+	this->previous_x = this->x;
+	this->previous_y = this->y;
 	
 	this->x = this->x + this->vx;
 	this->y = this->y + this->vy;
