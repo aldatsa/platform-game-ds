@@ -139,7 +139,7 @@ int main(void) {
 		
 		// Apply gravity.
 		player.vy = player.vy + gravity;
-		
+		printf("g");
 		// Calculate Mario's new position.
 		player.calculateNewPosition();
 		
@@ -171,7 +171,7 @@ int main(void) {
 		}
 
 		swiWaitForVBlank();
-
+		
 		oamUpdate(&oamMain);
 		
 		camera.update();
