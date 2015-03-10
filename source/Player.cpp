@@ -50,12 +50,12 @@ void Player::tileCollisionDetection(u16* level) {
 	int previous_tile_y = (this->previous_y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
 	int tile_y = (this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
 	
-	printf("%d", this->previous_y);
-	printf("%d", this->y);
+	printf("%d", previous_tile_y);
+	printf("%d", tile_y);
 	
 	int collision = false;
 	
-	for (int i = previous_tile_y; i < tile_y; i++) {
+	for (int i = previous_tile_y; i <= tile_y; i++) {
 		
 		int tile_index = i * WORLD_WIDTH_TILES + tile_x;	
 		
