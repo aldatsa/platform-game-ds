@@ -85,21 +85,9 @@ int main(void) {
 		player.tileCollisionDetection((u16*) world);
 
 		player.animate();
-
-		if (player.x < SCREEN_WIDTH / 2) {
-
-			camera.x = 0;
-
-		} else if (player.x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
-
-			camera.x = WORLD_WIDTH - SCREEN_WIDTH;
-
-		} else {
-
-			camera.x = player.x - SCREEN_WIDTH / 2;
-
-		}
-
+		
+		camera.calculateNewPosition(player.x);
+		
 		swiWaitForVBlank();
 		
 		player.update();

@@ -12,6 +12,9 @@ class Camera {
 		int y;
 		
 		Camera(u16* level);
+		
+		void calculateNewPosition(int player_x);
+		
 		void update();
 	
 };
