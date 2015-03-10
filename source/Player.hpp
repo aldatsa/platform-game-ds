@@ -31,6 +31,8 @@ class Player {
 		
 		void animate();
 		
+		void update();
+		
 };
 
 #endif

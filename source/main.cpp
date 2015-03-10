@@ -76,15 +76,10 @@ int main(void) {
 
 	dmaCopy(marioPal, SPRITE_PALETTE, 512);
 
-	//load our palette
-	//BG_PALETTE[1] = RGB15(31,0,0);
-	//BG_PALETTE[2] = RGB15(0,31,0);
-
 	while(1) {
 		
 		player.calculateNewVelocity();
 		
-		// Calculate Mario's new position.
 		player.calculateNewPosition();
 		
 		player.tileCollisionDetection((u16*) world);
@@ -95,28 +90,19 @@ int main(void) {
 
 			camera.x = 0;
 
-			oamSet(&oamMain, 0, player.x, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-				player.sprite_gfx_mem, -1, false, false, false, false, false);
-
 		} else if (player.x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
 
 			camera.x = WORLD_WIDTH - SCREEN_WIDTH;
-
-			oamSet(&oamMain, 0, player.x - WORLD_WIDTH - SCREEN_WIDTH, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-				player.sprite_gfx_mem, -1, false, false, false, false, false);
 
 		} else {
 
 			camera.x = player.x - SCREEN_WIDTH / 2;
 
-			oamSet(&oamMain, 0, SCREEN_WIDTH / 2, player.y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
-				player.sprite_gfx_mem, -1, false, false, false, false, false);
-
 		}
 
 		swiWaitForVBlank();
 		
-		oamUpdate(&oamMain);
+		player.update();
 		
 		camera.update();
 		

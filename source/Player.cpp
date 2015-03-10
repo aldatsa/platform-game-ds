@@ -177,3 +177,26 @@ void Player::animate() {
 	dmaCopy(offset, this->sprite_gfx_mem, 32*32);
 	
 }
+
+void Player::update() {
+	
+	if (this->x < SCREEN_WIDTH / 2) {
+
+		oamSet(&oamMain, 0, this->x, this->y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			this->sprite_gfx_mem, -1, false, false, false, false, false);
+
+	} else if (this->x > WORLD_WIDTH - SCREEN_WIDTH / 2) {
+
+		oamSet(&oamMain, 0, this->x - WORLD_WIDTH - SCREEN_WIDTH, this->y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			this->sprite_gfx_mem, -1, false, false, false, false, false);
+
+	} else {
+
+		oamSet(&oamMain, 0, SCREEN_WIDTH / 2, this->y, 0, 0, SpriteSize_32x32, SpriteColorFormat_256Color,
+			this->sprite_gfx_mem, -1, false, false, false, false, false);
+
+	}
+	
+	oamUpdate(&oamMain);
+	
+}
