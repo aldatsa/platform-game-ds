@@ -25,6 +25,8 @@ class Player {
 		
 		void tileCollisionDetection(u16* level);
 		
+		void calculateNewVelocity();
+		
 		void calculateNewPosition();
 		
 		void animate();

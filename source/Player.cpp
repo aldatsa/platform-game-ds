@@ -6,6 +6,11 @@
 
 #define FRAMES_PER_ANIMATION 3
 
+#define GRAVITY 1
+
+#define WORLD_WIDTH 1024
+#define WORLD_HEIGHT 192
+
 #define TILE_WIDTH 8
 #define TILE_HEIGHT 8
 
@@ -17,6 +22,14 @@
 
 #define WORLD_WIDTH_TILES 128
 #define WORLD_HEIGHT_TILES 24
+
+//---------------------------------------------------------------------
+// The state of the sprite (which way it is walking)
+//---------------------------------------------------------------------
+#define W_UP 0
+#define W_RIGHT 1
+#define W_DOWN 2
+#define W_LEFT 3
 
 Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
 	
@@ -88,6 +101,61 @@ void Player::calculateNewPosition() {
 	
 	this->x = this->x + this->vx;
 	this->y = this->y + this->vy;
+	
+}
+
+void Player::calculateNewVelocity() {
+	
+	int keys_held = 0;
+	int keys_down = 0;
+
+	scanKeys();
+
+	keys_held = keysHeld();
+	keys_down = keysDown();
+
+	if((keys_held & KEY_LEFT) && (this->x > 0)) {
+		
+		if (keys_held & KEY_B) {
+			
+			this->vx = -4;
+			
+		} else {
+			
+			this->vx = -1;
+			
+		}
+		
+		this->state = W_LEFT;
+
+	} else if ((keys_held & KEY_RIGHT) && (this->x < WORLD_WIDTH - MARIO_WIDTH) ) {
+
+		if (keys_held & KEY_B) {
+			
+			this->vx = 4;
+			
+		} else {
+			
+			this->vx = 1;
+			
+		}
+
+		this->state = W_RIGHT;
+
+	} else {
+		
+		this->vx = 0;
+		
+	}
+
+	if (keys_down & KEY_A) {
+
+		// Jump Mario! Jump!
+		this->vy = -10;
+	}
+	
+	// Apply gravity.
+	this->vy = this->vy + GRAVITY;
 	
 }
 

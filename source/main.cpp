@@ -8,12 +8,6 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 
-
-//---------------------------------------------------------------------
-// The state of the sprite (which way it is walking)
-//---------------------------------------------------------------------
-enum SpriteState {W_UP = 0, W_RIGHT = 1, W_DOWN = 2, W_LEFT = 3};
-
 //---------------------------------------------------------------------
 // Screen dimentions
 //---------------------------------------------------------------------
@@ -66,8 +60,6 @@ int main(void) {
 	
 	Player player((u8*)marioTiles, 0, 136, 0, 0);
 
-	int gravity = 1;
-
 	consoleDemoInit();
 	
 	//set video mode and map vram to the background
@@ -89,56 +81,8 @@ int main(void) {
 	//BG_PALETTE[2] = RGB15(0,31,0);
 
 	while(1) {
-		int keys_held = 0;
-		int keys_down = 0;
-
-		scanKeys();
-
-		keys_held = keysHeld();
-		keys_down = keysDown();
-
-		if((keys_held & KEY_LEFT) && (player.x > 0)) {
-			
-			if (keys_held & KEY_B) {
-				
-				player.vx = -4;
-				
-			} else {
-				
-				player.vx = -1;
-				
-			}
-			
-			player.state = W_LEFT;
-
-		} else if ((keys_held & KEY_RIGHT) && (player.x < WORLD_WIDTH - MARIO_WIDTH) ) {
-
-			if (keys_held & KEY_B) {
-				
-				player.vx = 4;
-				
-			} else {
-				
-				player.vx = 1;
-				
-			}
-
-			player.state = W_RIGHT;
-
-		} else {
-			
-			player.vx = 0;
-			
-		}
-
-		if (keys_down & KEY_A) {
-
-			// Jump Mario! Jump!
-			player.vy = -10;
-		}
 		
-		// Apply gravity.
-		player.vy = player.vy + gravity;
+		player.calculateNewVelocity();
 		
 		// Calculate Mario's new position.
 		player.calculateNewPosition();
