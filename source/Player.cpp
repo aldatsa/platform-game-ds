@@ -48,16 +48,14 @@ void Player::tileCollisionDetection(u16* level) {
 	int tile_x = this->x / TILE_WIDTH;
 	
 	int previous_tile_y = (this->previous_y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
-	int tile_y = (this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
-	
-	printf("%d", previous_tile_y);
-	printf("%d", tile_y);
+	int current_tile_y = (this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
 	
 	int collision = false;
 	
-	for (int i = previous_tile_y; i <= tile_y; i++) {
+	// For each tile between the previous one and the current one, test if there is a collision.
+	for (int tile_y = previous_tile_y; tile_y <= current_tile_y; tile_y++) {
 		
-		int tile_index = i * WORLD_WIDTH_TILES + tile_x;	
+		int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
 		
 		for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
 			
@@ -68,10 +66,11 @@ void Player::tileCollisionDetection(u16* level) {
 		}
 	
 		if (collision == true) {
-			printf("collision\n");
-			// Stop the falling movement of the player when it hits a solid tile.
-			this->y = (i - MARIO_HEIGHT_TILES - 1) * TILE_HEIGHT;
-		
+			
+			// Put the player on top of the first solid tile.
+			this->y = (tile_y - MARIO_HEIGHT_TILES - 1) * TILE_HEIGHT;
+			
+			// Stop the falling movement of the player.
 			this->vy = 0;
 			
 			break;
@@ -80,7 +79,6 @@ void Player::tileCollisionDetection(u16* level) {
 		
 	}
 	
-	//printf("%d\n", this->y);
 }
 
 void Player::calculateNewPosition() {
