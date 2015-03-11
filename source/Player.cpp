@@ -56,42 +56,73 @@ Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
 void Player::tileCollisionDetection(u16* level) {
 	
 	// Tiles that the player can't pass through. 
-	int solid_tiles[4] = {12, 13, 14, 15};
+	int solid_tiles[] = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
 	
 	int tile_x = this->x / TILE_WIDTH;
 	
-	int previous_tile_y = (this->previous_y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
-	int current_tile_y = (this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
-	
 	int collision = false;
 	
-	// For each tile between the previous one and the current one, test if there is a collision.
-	for (int tile_y = previous_tile_y; tile_y <= current_tile_y; tile_y++) {
+	if (this->vy > 0) {
 		
-		int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
+		int previous_tile_y = (this->previous_y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
+		int current_tile_y = (this->y + MARIO_HEIGHT - 1) / TILE_HEIGHT;
 		
-		for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+		// For each tile between the previous one and the current one, test if there is a collision.
+		for (int tile_y = previous_tile_y; tile_y <= current_tile_y; tile_y++) {
 			
-			if (level[tile_index] == solid_tiles[i]) {
-				collision = true;
+			int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
+			
+			for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+				
+				if (level[tile_index] == solid_tiles[i]) {
+					collision = true;
+				}
+				
+			}
+		
+			if (collision == true) {
+				
+				// Put the player on top of the first solid tile.
+				this->y = (tile_y - MARIO_HEIGHT_TILES - 1) * TILE_HEIGHT;
+				
+				// Stop the falling movement of the player.
+				this->vy = 0;
+				
+				break;
+				
 			}
 			
 		}
-	
-		if (collision == true) {
+	} else {
+		
+		int previous_tile_y = (this->previous_y - 1) / TILE_HEIGHT;
+		int current_tile_y = (this->y - 1) / TILE_HEIGHT;
+		
+		for (int tile_y = previous_tile_y; tile_y >= current_tile_y; tile_y--) {
 			
-			// Put the player on top of the first solid tile.
-			this->y = (tile_y - MARIO_HEIGHT_TILES - 1) * TILE_HEIGHT;
+			int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
 			
-			// Stop the falling movement of the player.
-			this->vy = 0;
-			
-			break;
+			for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+				
+				if (level[tile_index] == solid_tiles[i]) {
+					collision = true;
+				}
+				
+			}
+		
+			if (collision == true) {
+				
+				this->y = tile_y * TILE_HEIGHT;
+				
+				this->vy = 0;
+				
+				break;
+				
+			}
 			
 		}
 		
 	}
-	
 }
 
 void Player::calculateNewPosition() {
