@@ -93,6 +93,12 @@ void Player::tileCollisionDetection(u16* level) {
 					
 				}
 				
+				if (collision == true) {
+					
+					break;
+					
+				}
+				
 			}
 			
 			if (collision == true) {
@@ -128,6 +134,12 @@ void Player::tileCollisionDetection(u16* level) {
 						break;
 						
 					}
+					
+				}
+				
+				if (collision == true) {
+					
+					break;
 					
 				}
 				
