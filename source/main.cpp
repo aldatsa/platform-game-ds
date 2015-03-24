@@ -67,8 +67,10 @@ int main(void) {
 		
 		player.calculateNewPosition();
 		
-		player.tileCollisionDetection((u16*) world);
-
+		player.tileCollisionDetectionX((u16*) world);
+		
+		player.tileCollisionDetectionY((u16*) world);
+		
 		player.animate();
 		
 		camera.calculateNewPosition(player.x);

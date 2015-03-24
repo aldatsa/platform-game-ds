@@ -23,7 +23,9 @@ class Player {
 		
 		Player(u8* gfx, int x, int y, int vx, int vy);
 		
-		void tileCollisionDetection(u16* level);
+		void tileCollisionDetectionX(u16* level);
+		
+		void tileCollisionDetectionY(u16* level);
 		
 		void calculateNewVelocity();
 		

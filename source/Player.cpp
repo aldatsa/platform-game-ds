@@ -53,14 +53,120 @@ Player::Player(u8* gfx, int x = 0, int y = 0, int vx = 0, int vy = 0) {
 	
 }
 
-void Player::tileCollisionDetection(u16* level) {
+void Player::tileCollisionDetectionX(u16* level) {
 	
 	// Tiles that the player can't pass through. 
 	int solid_tiles[] = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
 	
-	int tile_x_left = this->x / TILE_WIDTH;
+	int collision = false;
+	
+	int tile_y_top = this->previous_y / TILE_HEIGHT;
+	
+	if (this->vx > 0) {
+		
+		int previous_tile_x = (this->previous_x + MARIO_WIDTH - 1) / TILE_WIDTH;
+		int current_tile_x = (this->x + MARIO_WIDTH - 1) / TILE_WIDTH;
+		
+		// For each tile in front of the player.
+		for (int tile_y = tile_y_top; tile_y < tile_y_top + MARIO_HEIGHT_TILES; tile_y++) {
+			
+			// For each tile between the previous one and the current one, test if there is a collision.
+			for (int tile_x = previous_tile_x; tile_x <= current_tile_x; tile_x++) {
+				
+				int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
+				
+				for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+					
+					if (level[tile_index] == solid_tiles[i]) {
+						
+						collision = true;
+						
+						// Put the player in front of the first solid tile.
+						this->x = (tile_x - 1) * TILE_WIDTH;
+						
+						// Stop the forward movement of the player.
+						this->vx = 0;
+						
+						break;
+						
+					}
+					
+				}
+				
+				if (collision == true) {
+					
+					break;
+					
+				}
+			
+			}
+			
+			if (collision == true) {
+				
+				break;
+				
+			}
+			
+		}
+			
+	} else {
+		
+		int previous_tile_x = this->previous_x / TILE_HEIGHT;
+		int current_tile_x = this->x / TILE_HEIGHT;
+		
+		// For each tile in front of the player.
+		for (int tile_y = tile_y_top; tile_y < tile_y_top + MARIO_HEIGHT_TILES; tile_y++) {
+			
+			// For each tile between the previous one and the current one, test if there is a collision.
+			for (int tile_x = previous_tile_x; tile_x >= current_tile_x; tile_x--) {
+				
+				int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
+				
+				for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+					
+					if (level[tile_index] == solid_tiles[i]) {
+						
+						collision = true;
+						
+						// Put the player in front of the first solid tile.
+						this->x = tile_x * TILE_HEIGHT;
+						
+						this->vx = 0;
+						
+						break;
+						
+					}
+					
+				}
+				
+				if (collision == true) {
+					
+					break;
+					
+				}
+				
+			}
+			
+			if (collision == true) {
+				
+				break;
+				
+			}
+		
+		}
+	
+	}
+	
+}
+
+void Player::tileCollisionDetectionY(u16* level) {
+	
+	// Tiles that the player can't pass through. 
+	int solid_tiles[] = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
 	
 	int collision = false;
+	
+	int tile_x_left = this->x / TILE_WIDTH;
 	
 	if (this->vy > 0) {
 		
