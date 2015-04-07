@@ -122,7 +122,8 @@ void Player::tileCollisionDetectionX(u16* level) {
 			// For each tile between the previous one and the current one, test if there is a collision.
 			for (int tile_x = previous_tile_x; tile_x >= current_tile_x; tile_x--) {
 				
-				int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
+				// Without the plus one the player stops too far from the obstacle.
+				int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x + 1;
 				
 				for (int i = 0; i < sizeof(solid_tiles) / sizeof(int); i++) {
 					
