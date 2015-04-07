@@ -117,7 +117,7 @@ void Player::tileCollisionDetectionX(u16* level) {
 	} else if (this->vx < 0) {
 		
 		// For each tile in front of the player.
-		for (int tile_y = tile_y_top; tile_y < tile_y_top + MARIO_HEIGHT_TILES; tile_y++) {
+		for (int tile_y = tile_y_top; tile_y <= tile_y_top + MARIO_HEIGHT_TILES; tile_y++) {
 			
 			// For each tile between the previous one and the current one, test if there is a collision.
 			for (int tile_x = previous_tile_x; tile_x >= current_tile_x; tile_x--) {
