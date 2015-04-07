@@ -6,7 +6,7 @@
 
 #define FRAMES_PER_ANIMATION 3
 
-#define GRAVITY 0
+#define GRAVITY 1
 
 #define WORLD_WIDTH 1024
 #define WORLD_HEIGHT 192
