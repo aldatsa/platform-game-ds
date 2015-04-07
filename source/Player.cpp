@@ -6,7 +6,7 @@
 
 #define FRAMES_PER_ANIMATION 3
 
-#define GRAVITY 1
+#define GRAVITY 0
 
 #define WORLD_WIDTH 1024
 #define WORLD_HEIGHT 192
@@ -62,10 +62,10 @@ void Player::tileCollisionDetectionX(u16* level) {
 	
 	int tile_y_top = this->previous_y / TILE_HEIGHT;
 	
+	int previous_tile_x = this->previous_x / TILE_WIDTH;
+	int current_tile_x = this->x / TILE_WIDTH;
+	
 	if (this->vx > 0) {
-		
-		int previous_tile_x = (this->previous_x + MARIO_WIDTH - 1) / TILE_WIDTH;
-		int current_tile_x = (this->x + MARIO_WIDTH - 1) / TILE_WIDTH;
 		
 		// For each tile in front of the player.
 		for (int tile_y = tile_y_top; tile_y < tile_y_top + MARIO_HEIGHT_TILES; tile_y++) {
@@ -73,16 +73,21 @@ void Player::tileCollisionDetectionX(u16* level) {
 			// For each tile between the previous one and the current one, test if there is a collision.
 			for (int tile_x = previous_tile_x; tile_x <= current_tile_x; tile_x++) {
 				
-				int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
+				int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x + MARIO_WIDTH_TILES;	
 				
-				for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+				for (int i = 0; i < sizeof(solid_tiles) / sizeof(int); i++) {
 					
 					if (level[tile_index] == solid_tiles[i]) {
 						
 						collision = true;
 						
+						printf("%d\n", tile_x);
+						printf("%d\n", this->x);
+						
 						// Put the player in front of the first solid tile.
-						this->x = (tile_x - 1) * TILE_WIDTH;
+						this->x = tile_x * TILE_WIDTH;
+						
+						printf("%d\n", this->x);
 						
 						// Stop the forward movement of the player.
 						this->vx = 0;
@@ -109,10 +114,7 @@ void Player::tileCollisionDetectionX(u16* level) {
 			
 		}
 			
-	} else {
-		
-		int previous_tile_x = this->previous_x / TILE_HEIGHT;
-		int current_tile_x = this->x / TILE_HEIGHT;
+	} else if (this->vx < 0) {
 		
 		// For each tile in front of the player.
 		for (int tile_y = tile_y_top; tile_y < tile_y_top + MARIO_HEIGHT_TILES; tile_y++) {
@@ -122,14 +124,19 @@ void Player::tileCollisionDetectionX(u16* level) {
 				
 				int tile_index = tile_y * WORLD_WIDTH_TILES + tile_x;	
 				
-				for (int i = 0; i < sizeof(solid_tiles)/sizeof(int); i++) {
+				for (int i = 0; i < sizeof(solid_tiles) / sizeof(int); i++) {
 					
 					if (level[tile_index] == solid_tiles[i]) {
 						
 						collision = true;
 						
+						printf("%d\n", tile_x);
+						printf("%d\n", this->x);
+						
 						// Put the player in front of the first solid tile.
-						this->x = tile_x * TILE_HEIGHT;
+						this->x = tile_x * TILE_WIDTH;
+						
+						printf("%d\n", this->x);
 						
 						this->vx = 0;
 						
