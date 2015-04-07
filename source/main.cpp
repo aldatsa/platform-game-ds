@@ -69,7 +69,7 @@ int main(void) {
 		
 		player.tileCollisionDetectionX((u16*) world);
 		
-		player.tileCollisionDetectionY((u16*) world);
+		//player.tileCollisionDetectionY((u16*) world);
 		
 		player.animate();
 		
