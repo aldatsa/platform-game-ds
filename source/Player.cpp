@@ -130,11 +130,14 @@ void Player::tileCollisionDetectionX(u16* level) {
 						
 						collision = true;
 						
+						printf("%d\n", previous_tile_x);
+						printf("%d\n", current_tile_x);
+						
 						printf("%d\n", tile_x);
 						printf("%d\n", this->x);
 						
 						// Put the player in front of the first solid tile.
-						this->x = tile_x * TILE_WIDTH;
+						this->x = (tile_x + 1) * TILE_WIDTH;
 						
 						printf("%d\n", this->x);
 						
