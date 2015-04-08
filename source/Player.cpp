@@ -6,7 +6,7 @@
 
 #define FRAMES_PER_ANIMATION 3
 
-#define GRAVITY 0
+#define GRAVITY 1
 
 #define WORLD_WIDTH 1024
 #define WORLD_HEIGHT 192
@@ -177,7 +177,8 @@ void Player::tileCollisionDetectionY(u16* level) {
 	
 	int collision = false;
 	
-	int tile_x_left = this->x / TILE_WIDTH;
+	// I don't understand why, but without the plus one the player jumps over the obstacles of on its left.
+	int tile_x_left = this->x / TILE_WIDTH + 1;
 	
 	if (this->vy > 0) {
 		
